@@ -27,3 +27,10 @@
 *.exe
 *.out
 *.app
+
+# VS build folders
+Debug*
+Release*
+ipch
+.vs
+*.VC.db
