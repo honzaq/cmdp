@@ -120,5 +120,14 @@ namespace cmdp
 			Assert::IsTrue(cmdp(L"name1").str().compare(L"value1") == 0);
 			Assert::IsTrue(cmdp[L"name2"] == true);
 		}
+
+		TEST_METHOD(SlashSeparatorName)
+		{
+			const wchar_t* argv[] = { L"/pipe-name" };
+			int argc = sizeof(argv) / sizeof(argv[0]);
+			cmdp::parser cmdp(argc, argv);
+			Assert::IsTrue(cmdp.params().size() == 1);
+			Assert::IsTrue(cmdp[L"pipe-name"] == true);
+		}
 	};
 }
