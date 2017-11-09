@@ -18,6 +18,7 @@ namespace cmdp
 			Assert::IsTrue(cmdp.params().size() == 1);
 			Assert::IsTrue(cmdp[L"a"] == true);
 			Assert::IsTrue(cmdp(L"a").str().empty());
+			Assert::IsTrue(cmdp.str(L"a").empty());
 		}
 
 		TEST_METHOD(FlagsOneChars)
@@ -128,6 +129,16 @@ namespace cmdp
 			cmdp::parser cmdp(argc, argv);
 			Assert::IsTrue(cmdp.params().size() == 1);
 			Assert::IsTrue(cmdp[L"pipe-name"] == true);
+		}
+
+		TEST_METHOD(Number)
+		{
+			const wchar_t* argv[] = { L"/name=a" };
+			int argc = sizeof(argv) / sizeof(argv[0]);
+			cmdp::parser cmdp(argc, argv);
+			Assert::IsTrue(cmdp.params().size() == 1);
+			int32_t value = cmdp.num(L"name", 7);
+			Assert::IsTrue(value == 1);
 		}
 	};
 }

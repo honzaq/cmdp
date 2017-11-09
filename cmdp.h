@@ -50,6 +50,8 @@ public:
 	bool operator[](const std::wstring& name);
 	// param value accessor
 	std::wistringstream operator()(const std::wstring& name);
+	std::wstring str(const std::wstring& name, const wchar_t* default = L"");
+	int32_t num(const std::wstring& name, int32_t default = 0);
 
 private:
 	void parse_one_param(const wchar_t* const param, std::wstring& prev_param_name);
@@ -102,20 +104,59 @@ bool parser::operator[](const std::wstring& name)
 
 std::wistringstream parser::operator()(const std::wstring& name)
 {
-	if (name.empty()) {
+	if(name.empty()) {
 		return bad_stream();
 	}
 
 	const auto& param = m_params.find(name);
-	if (param == m_params.end()) {
+	if(param == m_params.end()) {
 		return bad_stream();
 	}
 
-	if (!param->second.has_value) {
+	if(!param->second.has_value) {
 		return bad_stream();
 	}
 
 	return std::wistringstream(param->second.value);
+}
+
+std::wstring parser::str(const std::wstring& name, const wchar_t* default /*= L""*/)
+{
+	if (name.empty()) {
+		return std::wstring(default);
+	}
+
+	const auto& param = m_params.find(name);
+	if (param == m_params.end()) {
+		return std::wstring(default);
+	}
+
+	if (!param->second.has_value) {
+		return std::wstring(default);
+	}
+
+	return std::wstring(param->second.value);
+}
+
+int32_t parser::num(const std::wstring& name, int32_t default /*= 0*/)
+{
+	if(name.empty()) {
+		return default;
+	}
+
+	const auto& param = m_params.find(name);
+	if(param == m_params.end()) {
+		return default;
+	}
+
+	if(!param->second.has_value) {
+		return default;
+	}
+	
+	int32_t value = default;
+	std::wistringstream(param->second.value) >> value;
+	return value;
+
 }
 
 void parser::parse_one_param(const wchar_t* const param, std::wstring& prev_param_name)
